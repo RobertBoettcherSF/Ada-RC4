@@ -46,7 +46,7 @@ private
    type State_Array is array (Byte) of Byte;
 
    type Context is record
-      S : State_Array := (others => 0);
+      S : State_Array := [others => 0];
       I : Byte := 0;
       J : Byte := 0;
    end record;
