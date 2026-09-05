@@ -35,7 +35,7 @@ begin
    declare
       Key_1 : constant Byte_Array := To_Bytes ("Key");
       Pt_1  : constant Byte_Array := To_Bytes ("Plaintext");
-      Exp_1 : constant Byte_Array := (16#BB#, 16#F3#, 16#16#, 16#E8#, 16#D9#, 16#40#, 16#AF#, 16#0A#, 16#D3#);
+      Exp_1 : constant Byte_Array := [16#BB#, 16#F3#, 16#16#, 16#E8#, 16#D9#, 16#40#, 16#AF#, 16#0A#, 16#D3#];
       Res_1 : Byte_Array (Pt_1'Range);
    begin
       Initialize (Ctx, Key_1);
@@ -51,7 +51,7 @@ begin
    declare
       Key_2 : constant Byte_Array := To_Bytes ("Wiki");
       Pt_2  : constant Byte_Array := To_Bytes ("pedia");
-      Exp_2 : constant Byte_Array := (16#10#, 16#21#, 16#BF#, 16#04#, 16#20#);
+      Exp_2 : constant Byte_Array := [16#10#, 16#21#, 16#BF#, 16#04#, 16#20#];
       Res_2 : Byte_Array (Pt_2'Range);
    begin
       Initialize (Ctx, Key_2);
@@ -67,7 +67,8 @@ begin
    declare
       Key_3 : constant Byte_Array := To_Bytes ("Secret");
       Pt_3  : constant Byte_Array := To_Bytes ("Attack at dawn");
-      Exp_3 : constant Byte_Array := (16#45#, 16#A0#, 16#1F#, 16#64#, 16#5C#, 16#75#, 16#CE#, 16#D0#, 16#92#, 16#2C#, 16#CB#, 16#8B#, 16#C9#, 16#80#);
+      -- Corrected hex corresponding directly to 45A01F645FC35B383552544B9BF5
+      Exp_3 : constant Byte_Array := [16#45#, 16#A0#, 16#1F#, 16#64#, 16#5F#, 16#C3#, 16#5B#, 16#38#, 16#35#, 16#52#, 16#54#, 16#4B#, 16#9B#, 16#F5#];
       Res_3 : Byte_Array (Pt_3'Range);
    begin
       Initialize (Ctx, Key_3);
@@ -83,7 +84,7 @@ begin
    declare
       Key  : constant Byte_Array := To_Bytes ("Key");
       Pt   : constant Byte_Array := To_Bytes ("Plaintext");
-      Exp  : constant Byte_Array := (16#BB#, 16#F3#, 16#16#, 16#E8#, 16#D9#, 16#40#, 16#AF#, 16#0A#, 16#D3#);
+      Exp  : constant Byte_Array := [16#BB#, 16#F3#, 16#16#, 16#E8#, 16#D9#, 16#40#, 16#AF#, 16#0A#, 16#D3#];
       Data : Byte_Array := Pt;
    begin
       Initialize (Ctx, Key);
@@ -98,8 +99,8 @@ begin
    -- TEST 5 — Edge Case: Minimum Key Length (1 Byte)
    Put_Line ("TEST 5 — Edge Case: Minimum Key Length (1 Byte)");
    declare
-      Min_Key : constant Byte_Array := (1 => 42);
-      Pt      : constant Byte_Array := (1 .. 10 => 0);
+      Min_Key : constant Byte_Array := [1 => 42];
+      Pt      : constant Byte_Array := [1 .. 10 => 0];
       Res     : Byte_Array (Pt'Range);
    begin
       Initialize (Ctx, Min_Key);
@@ -113,8 +114,8 @@ begin
    -- TEST 6 — Edge Case: Maximum Key Length (256 Bytes)
    Put_Line ("TEST 6 — Edge Case: Maximum Key Length (256 Bytes)");
    declare
-      Max_Key : constant Byte_Array (1 .. 256) := (others => 16#AA#);
-      Pt      : constant Byte_Array := (1 .. 10 => 0);
+      Max_Key : constant Byte_Array (1 .. 256) := [others => 16#AA#];
+      Pt      : constant Byte_Array := [1 .. 10 => 0];
       Res     : Byte_Array (Pt'Range);
    begin
       Initialize (Ctx, Max_Key);
@@ -128,7 +129,7 @@ begin
    -- TEST 7 — Edge Case: Empty Input Data Processing
    Put_Line ("TEST 7 — Edge Case: Empty Input Data Processing");
    declare
-      Empty_Data : constant Byte_Array (1 .. 0) := (others => 0);
+      Empty_Data : constant Byte_Array (1 .. 0) := [others => 0];
       Res        : Byte_Array (1 .. 0);
    begin
       Initialize (Ctx, To_Bytes("Key"));
@@ -136,7 +137,7 @@ begin
       Check ("7.1 Process returns securely sized empty array", Res'Length = 0);
       
       declare
-         Data_In_Place : Byte_Array (1 .. 0) := (others => 0);
+         Data_In_Place : Byte_Array (1 .. 0) := [others => 0];
       begin
          Process_In_Place (Ctx, Data_In_Place);
          Check ("7.2 Process_In_Place succeeds harmlessly on empty array", Data_In_Place'Length = 0);
@@ -149,8 +150,8 @@ begin
    -- TEST 8 — Error Handling (Invalid Key Lengths)
    Put_Line ("TEST 8 — Error Handling (Invalid Key Lengths)");
    declare
-      Empty_Key : constant Byte_Array (1 .. 0) := (others => 0);
-      Long_Key  : constant Byte_Array (1 .. 257) := (others => 0);
+      Empty_Key : constant Byte_Array (1 .. 0) := [others => 0];
+      Long_Key  : constant Byte_Array (1 .. 257) := [others => 0];
       Raised_1, Raised_2, Raised_3 : Boolean := False;
    begin
       begin
@@ -181,7 +182,7 @@ begin
    -- TEST 9 — RC4-Drop Standard Functionality (Drop 768)
    Put_Line ("TEST 9 — RC4-Drop Standard Functionality (Drop 768)");
    declare
-      Pt       : constant Byte_Array := (1 .. 5 => 0);
+      Pt       : constant Byte_Array := [1 .. 5 => 0];
       Res_Drop : Byte_Array (Pt'Range);
       Res_Std  : Byte_Array (Pt'Range);
    begin
@@ -201,7 +202,7 @@ begin
    -- TEST 10 — RC4-Drop Boundary (Drop 0 bytes)
    Put_Line ("TEST 10 — RC4-Drop Boundary (Drop 0 bytes)");
    declare
-      Pt        : constant Byte_Array := (1 .. 10 => 16#FF#);
+      Pt        : constant Byte_Array := [1 .. 10 => 16#FF#];
       Res_Drop0 : Byte_Array (Pt'Range);
       Res_Std   : Byte_Array (Pt'Range);
    begin
@@ -240,7 +241,7 @@ begin
    -- TEST 12 — Stream Continuity (Chunking)
    Put_Line ("TEST 12 — Stream Continuity (Chunking)");
    declare
-      Pt        : constant Byte_Array := (1 .. 10 => 16#AA#);
+      Pt        : constant Byte_Array := [1 .. 10 => 16#AA#];
       Res_Full  : Byte_Array (1 .. 10);
       Res_Part1 : Byte_Array (1 .. 5);
       Res_Part2 : Byte_Array (6 .. 10);
@@ -268,7 +269,7 @@ begin
    -- TEST 13 — Manual PRGA API Interaction
    Put_Line ("TEST 13 — Manual PRGA API Interaction");
    declare
-      Pt       : constant Byte_Array (1 .. 5) := (1, 2, 3, 4, 5);
+      Pt       : constant Byte_Array (1 .. 5) := [1, 2, 3, 4, 5];
       Res_Proc : Byte_Array (1 .. 5);
       Res_Man  : Byte_Array (1 .. 5);
       K_Stream : Byte;
